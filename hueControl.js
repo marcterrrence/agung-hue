@@ -7,14 +7,18 @@ function turnOnHueLight(req, res) {
     const hueApiEndpoint = 'http://10.10.10.101/lights/1/state'; // Replace with your Philips Hue API endpoint and light ID
     const hueApiKey = 'your-philips-hue-api-key'; // Replace with your Philips Hue API key
 
-    const hueLightState = {
+    const turnOnState = {
       on: true,
-      bri: 254, // Brightness (0-254)
-      hue: 10000, // Color hue (0-65535)
-      sat: 254, // Saturation (0-254)
+      bri: 254,
+      hue: 10000,
+      sat: 254,
     };
 
-    axios.put(hueApiEndpoint, hueLightState, {
+    const turnOffState = {
+      on: false,
+    };
+
+    axios.put(hueApiEndpoint, turnOnState, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${hueApiKey}`
@@ -22,7 +26,22 @@ function turnOnHueLight(req, res) {
     })
     .then(response => {
       console.log('Hue light turned on:', response.data);
-      res.status(200).json({ message: 'Hue light turned on' });
+      setTimeout(() => {
+        axios.put(hueApiEndpoint, turnOffState, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${hueApiKey}`
+          }
+        })
+        .then(() => {
+          console.log('Hue light turned off');
+        })
+        .catch(error => {
+          console.error('Error turning off Hue light:', error);
+        });
+      }, 3000); // 3 seconds
+
+      res.status(200).json({ message: 'Hue light turned on for 3 seconds' });
     })
     .catch(error => {
       console.error('Error turning on Hue light:', error);
@@ -44,3 +63,4 @@ app.post('/control-hue', turnOnHueLight);
 app.listen(3000, () => {
   console.log('Server is running on port 3000');
 });
+
