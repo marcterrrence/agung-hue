@@ -1,6 +1,3 @@
-Certainly! Here's an example of a Node.js function that handles an API request and turns on a Philips Hue light using the Philips Hue API:
-
-```javascript
 const axios = require('axios');
 
 function turnOnHueLight(req, res) {
@@ -47,8 +44,3 @@ app.post('/control-hue', turnOnHueLight);
 app.listen(3000, () => {
   console.log('Server is running on port 3000');
 });
-```
-
-Please note that you need to replace `'http://your-philips-hue-api-endpoint/lights/1/state'` with the actual Philips Hue API endpoint for your light, and `'your-philips-hue-api-key'` with your Philips Hue API key. Also, make sure you have the `axios` package installed (`npm install axios`) before running this code.
-
-This code assumes you're using Express.js as the server framework, but you can adapt it to any other Node.js server framework as needed. The function `turnOnHueLight` checks if the event type is `'tip'`, and if so, it sends a PUT request to the Philips Hue API to turn on the specified light.
