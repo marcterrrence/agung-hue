@@ -1,10 +1,12 @@
 const axios = require('axios');
 
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'; // Disables SSL certificate verification
+
 function turnOnHueLight(req, res) {
   const postData = req.body;
 
   if (postData.event === 'tip') {
-    const hueApiEndpoint = 'http://10.10.10.101/lights/1/state'; // Replace with your Philips Hue API endpoint and light ID
+    const hueApiEndpoint = 'https://10.10.10.101/lights/1/state'; // Replace with your Philips Hue API endpoint and light ID
     const hueApiKey = 'your-philips-hue-api-key'; // Replace with your Philips Hue API key
 
     const turnOnState = {
@@ -22,7 +24,8 @@ function turnOnHueLight(req, res) {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${hueApiKey}`
-      }
+      },
+      rejectUnauthorized: false, // Disables SSL certificate verification
     })
     .then(response => {
       console.log('Hue light turned on:', response.data);
@@ -31,7 +34,8 @@ function turnOnHueLight(req, res) {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${hueApiKey}`
-          }
+          },
+          rejectUnauthorized: false, // Disables SSL certificate verification
         })
         .then(() => {
           console.log('Hue light turned off');
@@ -63,4 +67,3 @@ app.post('/control-hue', turnOnHueLight);
 app.listen(3000, () => {
   console.log('Server is running on port 3000');
 });
-
